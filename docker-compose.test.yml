@@ -1,0 +1,14 @@
+version: '3.9'
+services:
+  server:
+    ports: !override
+      - "5100:5100" 
+    environment:
+      - ENVIRONMENT=test
+      - PORT=5100
+      - DATABASE_URL=./db-test.json
+  client:
+    ports: !override
+      - "3100:5173"
+    environment:
+      - VITE_API_URL=http://localhost:5100

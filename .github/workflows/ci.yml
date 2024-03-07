@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  client:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install
+        run: npm ci
+      - name: Test
+        run: npm run test
+    needs: server
+  server:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install
+        run: npm ci
+      - name: Start Server
+        run: node index.js &
+        timeout-minutes: 5
+        env:
+          PORT: 4000
