@@ -5,54 +5,46 @@ on:
     branches: [main]
 
 jobs:
-  server:
+  e2e-tests:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: server
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      # Backend setup
+      - name: Setup Node.js for Backend
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14" # Ajuste selon ta version de Node.js
+      - name: Install Backend Dependencies
+        run: npm install
+        working-directory: server
       - name: Start Server
         run: node index.js &
         env:
           PORT: 4000
-        timeout-minutes: 5
+        working-directory: server
+        timeout-minutes: 5 # Donne le temps au serveur de démarrer
 
-  client:
-    runs-on: ubuntu-latest
-    needs: server
-    defaults:
-      run:
+      # Frontend setup
+      - name: Setup Node.js for Frontend
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14" # Ajuste selon ta version de Node.js
+      - name: Install Frontend Dependencies
+        run: npm install
         working-directory: client
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install dependencies
-        run: npm ci
       - name: Start client
         run: npm run dev &
         env:
           PORT: 5173
-
-  e2e-tests:
-    runs-on: ubuntu-latest
-    needs: client
-    defaults:
-      run:
         working-directory: client
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: List directory structure
-        run: ls -la
-      - name: Verify package-lock.json existence
-        run: ls -la package-lock.json || echo "package-lock.json not found!"
-      - name: Install Dependencies
-        run: npm ci
+
+      # E2E Tests
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
           wait-on: "http://localhost:5173"
           wait-on-timeout: 300
           browser: chrome
+        working-directory: client
