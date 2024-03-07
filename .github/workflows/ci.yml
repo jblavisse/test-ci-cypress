@@ -16,9 +16,9 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: "20"
-        working-directory: server
       - name: Start Server
         run: node index.js &
+        working-directory: server
         env:
           PORT: 4000
         working-directory: server
