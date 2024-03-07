@@ -10,6 +10,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      # Backend setup
       - name: Setup Node.js for Backend
         uses: actions/setup-node@v2
         with:
@@ -45,4 +47,3 @@ jobs:
           wait-on: "http://localhost:5173"
           wait-on-timeout: 300
           browser: chrome
-        working-directory: client
