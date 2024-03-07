@@ -18,7 +18,6 @@ jobs:
           node-version: "20"
       - name: Start Server
         run: node index.js &
-        working-directory: server
         env:
           PORT: 4000
         working-directory: server
