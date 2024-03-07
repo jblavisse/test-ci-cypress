@@ -15,9 +15,9 @@ jobs:
         uses: actions/checkout@v3
       - name: Start Server
         run: node index.js &
-        timeout-minutes: 5
         env:
           PORT: 4000
+        timeout-minutes: 5
 
   client:
     runs-on: ubuntu-latest
@@ -28,7 +28,30 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Install
+      - name: Install dependencies
         run: npm ci
       - name: Test
         run: npm run test
+      - name: Build client
+        run: npm run build
+      - name: Start client
+        run: npm start &
+        env:
+          PORT: 3000 # Assure-toi que ce port est correct et n'entre pas en conflit avec le serveur
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+    needs: client
+    defaults:
+      run:
+        working-directory: client
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          # Supprimer 'build' et 'start' car le client a déjà été construit et démarré dans le job 'client'
+          wait-on: "http://localhost:5173" # Assure-toi que cette URL corresponde à l'URL où ton client est servi
+          wait-on-timeout: 300 # 5 minutes maximum pour que le client soit prêt
+          browser: chrome
