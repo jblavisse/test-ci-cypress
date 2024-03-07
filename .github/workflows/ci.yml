@@ -15,9 +15,10 @@ jobs:
       - name: Setup Node.js for Backend
         uses: actions/setup-node@v2
         with:
-          node-version: "20"
+          node-version: "14"
       - name: Start Server
         run: node index.js &
+
         env:
           PORT: 4000
         working-directory: server
