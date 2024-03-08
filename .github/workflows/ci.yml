@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node.js for Backend
         uses: actions/setup-node@v2
         with:
-          node-version: "14"
+          node-version: "20"
       - name: Start Server
         run: node index.js &
 
@@ -28,7 +28,7 @@ jobs:
       - name: Setup Node.js for Frontend
         uses: actions/setup-node@v2
         with:
-          node-version: "14"
+          node-version: "20"
       - name: Install Frontend Dependencies
         run: npm install
         working-directory: client
@@ -45,3 +45,4 @@ jobs:
           wait-on: "http://localhost:5173"
           wait-on-timeout: 300
           browser: chrome
+          working-directory: client
